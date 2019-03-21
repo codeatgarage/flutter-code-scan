@@ -1,16 +1,37 @@
 # code_scann
 
-A flutter project to scan the QR code and save it in file system.
+Barcode scanning application use to scann the qr / 2D barcode of inventory and can share it with respective person as well.
 
-## Getting Started
+Key Features :
+    - Scann 2d Bar code
+    - Local db to store the code locally while offline
+    - Can export the file to csv locally.
+    - Can make call to server with posting all local data.
+    - Can check is internet available or not.
+    - Notify the user with snackbar regarding operation status.
 
-This project is a starting point for a Flutter application.
+## SCREENS
 
-A few resources to get you started if this is your first Flutter project:
+![Listing page](./example/code_listing_page.png?raw=true "LISTING PAGE")
+![Scanner page](./example/scanner.png?raw=true "LISTING PAGE")
+![Settings page](./example/settings_page.png?raw=true "LISTING PAGE")
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+## To run project locally
+`flutter run`
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## To create build runner for ios
+`flutter build ios --release`
+## Once build runner.app file created make the archive of it using xCode and clicking on distribute app select the signin profile and proper settings.
+
+## To create android build
+`flutter build apk --release`
+
+## Plugins used:
+  - barcode_scan: 0.0.8
+  - http: ^0.11.3+16
+  - sqflite: 0.13.0+1
+
+
+## License
+Copyright (c) 2019 Sahil Kashetwar
+
