@@ -86,7 +86,7 @@ class _CodeListingState extends State<CodeListing> {
         title: Text('Code List'),
         elevation: 0.0,
         backgroundColor: bgColor,
-        actions: <Widget>[
+        /*actions: <Widget>[
           IconButton(
             icon: Icon(
               Icons.refresh,
@@ -94,7 +94,7 @@ class _CodeListingState extends State<CodeListing> {
             ),
             onPressed: onRefresh,
           )
-        ],
+        ],*/
       ),
       body: Container(
         margin: EdgeInsets.all(5.0),

@@ -69,20 +69,12 @@ Future loadUser() async {
 /*
   saveDummy() {
     saveReport(new ScannerModel(
-        eanCode: "234U",
-        cDate: formatDate(
-            DateTime.now(), [dd, '/', mm, '/', yy, '-', HH, ':', nn])));
+        eanCode: "234U"));
     saveReport(new ScannerModel(
-        eanCode: "222U",
-        cDate: formatDate(
-            DateTime.now(), [dd, '/', mm, '/', yy, '-', HH, ':', nn])));
+        eanCode: "222U"));
     saveReport(new ScannerModel(
-        eanCode: "233333U",
-        cDate: formatDate(
-            DateTime.now(), [dd, '/', mm, '/', yy, '-', HH, ':', nn])));
+        eanCode: "222U"));
     saveReport(new ScannerModel(
-        eanCode: "55555U",
-        cDate: formatDate(
-            DateTime.now(), [dd, '/', mm, '/', yy, '-', HH, ':', nn])));
+        eanCode: "222U"));
   }
 */

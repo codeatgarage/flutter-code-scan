@@ -1,13 +1,17 @@
 import 'package:code_scann/models/user_model.dart';
+import 'package:code_scann/utils/common.utils.dart';
+import 'package:code_scann/utils/csv_handler.dart';
 import 'package:code_scann/utils/report_service.dart';
 import 'package:flutter/material.dart';
 
+var bgColor = Colors.blue[800];
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  GlobalKey<ScaffoldState> settingsPageKey = new GlobalKey<ScaffoldState>();
   TextEditingController _userNameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _clientIdController = new TextEditingController();
@@ -20,30 +24,37 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: Colors.black,
-                      width: 2.0,
-                      style: BorderStyle.solid)),
-              child: IconButton(
-                icon: Icon(Icons.person_outline),
-                iconSize: 40.0,
-                color: Colors.blueAccent,
-                onPressed: () {
-                  showFormDialog();
-                },
+    return Scaffold(
+      key: settingsPageKey,
+      appBar: AppBar(
+        title: Text('Settings'),
+        elevation: 0.0,
+        backgroundColor: bgColor,
+      ),
+      body: Container(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(10.0),
+                margin: EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: Colors.black,
+                        width: 2.0,
+                        style: BorderStyle.solid)),
+                child: IconButton(
+                  icon: Icon(Icons.person_outline),
+                  iconSize: 40.0,
+                  color: Colors.blueAccent,
+                  onPressed: () {
+                    showFormDialog();
+                  },
+                ),
               ),
-            ),
-            SizedBox(
+              /*SizedBox(
               height: 30.0,
             ),
             Container(
@@ -63,29 +74,41 @@ class _SettingsPageState extends State<SettingsPage> {
                   print('open form for user name & password');
                 },
               ),
-            ),
-            SizedBox(
-              height: 30.0,
-            ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: Colors.black,
-                      width: 2.0,
-                      style: BorderStyle.solid)),
-              child: IconButton(
-                icon: Icon(Icons.send),
-                iconSize: 40.0,
-                color: Colors.blueAccent,
-                onPressed: () {
-                  print('open form for user name & password');
-                },
+            ),*/
+              SizedBox(
+                height: 30.0,
               ),
-            ),
-          ],
+              Container(
+                padding: EdgeInsets.all(10.0),
+                margin: EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: Colors.black,
+                        width: 2.0,
+                        style: BorderStyle.solid)),
+                child: IconButton(
+                  icon: Icon(Icons.send),
+                  iconSize: 40.0,
+                  color: Colors.blueAccent,
+                  onPressed: () async {
+                    var result = await submitReport();
+                    if(result == null) {
+                      CommonUtils.showSnackBar(
+                          settingsPageKey, 'Some thing went wrong ! please try again.', null);
+                    } else if(result == 'userNotFound') {
+                      CommonUtils.showSnackBar(
+                          settingsPageKey, 'Invalid User, Please save user details!', null);
+                    }
+                    else {
+                      CommonUtils.showSnackBar(
+                          settingsPageKey, 'Successfully send to server!', null);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
