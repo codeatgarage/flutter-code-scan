@@ -68,7 +68,6 @@ submitReport() async {
       return null;
     }
   } catch (e) {
-    print(e);
     if (e.toString().contains('SocketException')) {
       return 'NetworkError';
     } else {
