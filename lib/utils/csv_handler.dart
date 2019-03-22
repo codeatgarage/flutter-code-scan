@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:code_scann/models/user_model.dart';
 import 'package:http_parser/http_parser.dart';
@@ -6,6 +7,7 @@ import 'package:code_scann/utils/report_service.dart';
 import 'package:csv/csv.dart';
 import 'package:code_scann/models/scanner_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 // load local path
 Future<String> get _localPath async {
@@ -32,6 +34,7 @@ Future<File> processListToCsv() async {
     List<dynamic> row = List();
     List<dynamic> timeHolder = scannerList[i].cDate.split(' ');
     row.add(scannerList[i].eanCode);
+    row.add('Code-128');
     row.add(timeHolder[1]);
     row.add(timeHolder[0]);
     codeListHolder.add(row);
@@ -40,13 +43,13 @@ Future<File> processListToCsv() async {
   return await writeCsvToFile(reportCsv);
 }
 
-submitReport() async {
+submitReport1() async {
   try {
     UserModel user = await loadUser();
     if(user == null ){
       return 'userNotFound';
     }
-    var reportSaveUrl = Uri.parse("https://homecaresoft.cz/indata/in.php");
+    var reportSaveUrl = Uri.parse("https://homecaresoft.cz/indata/inres.php");
     var request = new http.MultipartRequest("POST", reportSaveUrl);
     var csvFile = await processListToCsv();
     var len = await csvFile.length();
@@ -57,21 +60,55 @@ submitReport() async {
     request.fields['clientid'] = user.clientId;
     request.fields['username'] = user.userName;
     request.fields['password'] = user.password;
+    var currentDate = DateTime.now();
 
-    request.files.add(new http.MultipartFile.fromBytes('report.txt', await csvFile.readAsBytes(),
+    request.files.add(new http.MultipartFile.fromBytes('reports_${currentDate.millisecondsSinceEpoch}.txt', await csvFile.readAsBytes(),
         contentType: new MediaType('application', 'octet-stream')));
     http.StreamedResponse response = await request.send();
-    if(response.statusCode == 200 && response.reasonPhrase == 'OK') {
       csvFile.delete();
-      return true;
-    } else {
-      return null;
-    }
+      print(response.reasonPhrase);
+      print(response.statusCode);
+      return response;
   } catch (e) {
-    if (e.toString().contains('SocketException')) {
-      return 'NetworkError';
-    } else {
-      return null;
+      return false;
+  }
+}
+
+submitReport() async {
+  try {
+    UserModel user = await loadUser();
+    if(user == null ){
+      return 'userNotFound';
     }
+    var csvFile = await processListToCsv();
+    var len = await csvFile.length();
+    if(len == 0) {
+      return 'nodata';
+    }
+
+    Dio dio = new Dio();
+    var currentDate = DateTime.now();
+    FormData formData = FormData.from({
+      "clientid": user.clientId,
+      "userName": user.userName,
+      "password": user.password,
+      "files": [
+        UploadFileInfo(csvFile, "reports_${currentDate.millisecondsSinceEpoch}.txt"),
+      ]
+    });
+
+    var response = await dio.post("https://homecaresoft.cz/indata/inres.php",
+      data: formData,
+      onSendProgress: (received, total) {
+        if (total != -1) {
+          print((received / total * 100).toStringAsFixed(0) + "%");
+        }
+      }
+    );
+    csvFile.delete();
+    print('response from server $response');
+    return response;
+  } catch (e) {
+    return false;
   }
 }

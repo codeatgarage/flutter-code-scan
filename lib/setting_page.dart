@@ -37,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
   sendReport() async {
     startLoading();
     var result = await submitReport();
+    print(result);
     if(result == null) {
       CommonUtils.showSnackBar(
           settingsPageKey, 'Some thing went wrong ! please try again.', null, true);
@@ -46,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
     } else if(result == 'nodata') {
       CommonUtils.showSnackBar(
           settingsPageKey, 'No data found!', null, true);
-    } else if(result == 'NetworkError'){
+    } else if(result == false) {
       CommonUtils.showSnackBar(
           settingsPageKey, null, null, true);
     }
