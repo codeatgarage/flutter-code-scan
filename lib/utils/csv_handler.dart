@@ -106,7 +106,6 @@ submitReport() async {
       }
     );
     csvFile.delete();
-    print('response from server $response');
     return response;
   } catch (e) {
     return false;
