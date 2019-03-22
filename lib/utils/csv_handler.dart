@@ -41,25 +41,38 @@ Future<File> processListToCsv() async {
 }
 
 submitReport() async {
-  UserModel user = await loadUser();
-  if(user == null ){
-    return 'userNotFound';
-  }
-  var reportSaveUrl = Uri.parse("https://homecaresoft.cz/indata/in.php");
-  var request = new http.MultipartRequest("POST", reportSaveUrl);
-  var csvFile = await processListToCsv();
+  try {
+    UserModel user = await loadUser();
+    if(user == null ){
+      return 'userNotFound';
+    }
+    var reportSaveUrl = Uri.parse("https://homecaresoft.cz/indata/in.php");
+    var request = new http.MultipartRequest("POST", reportSaveUrl);
+    var csvFile = await processListToCsv();
+    var len = await csvFile.length();
+    if(len == 0) {
+      return 'nodata';
+    }
 
-  request.fields['clientid'] = user.clientId;
-  request.fields['username'] = user.userName;
-  request.fields['password'] = user.password;
+    request.fields['clientid'] = user.clientId;
+    request.fields['username'] = user.userName;
+    request.fields['password'] = user.password;
 
-  request.files.add(new http.MultipartFile.fromBytes('report.txt', await csvFile.readAsBytes(),
-      contentType: new MediaType('application', 'octet-stream')));
-  http.StreamedResponse response = await request.send();
-  if(response.statusCode == 200 && response.reasonPhrase == 'OK') {
-     csvFile.delete();
-     return true;
-  } else {
-     return null;
+    request.files.add(new http.MultipartFile.fromBytes('report.txt', await csvFile.readAsBytes(),
+        contentType: new MediaType('application', 'octet-stream')));
+    http.StreamedResponse response = await request.send();
+    if(response.statusCode == 200 && response.reasonPhrase == 'OK') {
+      csvFile.delete();
+      return true;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print(e);
+    if (e.toString().contains('SocketException')) {
+      return 'NetworkError';
+    } else {
+      return null;
+    }
   }
 }

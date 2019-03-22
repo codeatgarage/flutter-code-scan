@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
   saveCode(code) {
     ScannerModel result = new ScannerModel(eanCode: code);
     saveReport(result);
-    CommonUtils.showSnackBar(homepageKey, 'Code Save!.', null);
+    CommonUtils.showSnackBar(homepageKey, 'Code Save!.', null, false);
     listingPageKey.currentState.reloadState();
   }
 
@@ -54,12 +54,12 @@ class _HomePageState extends State<HomePage> {
   scanNow() async {
     String result = await ScannerUtils.getBarCode();
     if (result.contains('back')) {
-      CommonUtils.showSnackBar(homepageKey, 'Back button pressed.', null);
+      CommonUtils.showSnackBar(homepageKey, 'Back button pressed.', null, false);
     } else if (!result.contains('Err:')) {
       saveCode(result);
     } else {
       CommonUtils.showSnackBar(
-          homepageKey, 'Some thing went wrong ! please try again.', null);
+          homepageKey, 'Some thing went wrong ! please try again.', null, false);
     }
     listingPageKey.currentState.reloadState();
   }

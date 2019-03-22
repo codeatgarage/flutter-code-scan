@@ -16,6 +16,47 @@ class _SettingsPageState extends State<SettingsPage> {
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _clientIdController = new TextEditingController();
   UserModel userProfile;
+  bool _isLoading = false;
+
+  startLoading() {
+    if(this.mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
+  }
+
+  stopLoading() {
+    if(this.mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  sendReport() async {
+    startLoading();
+    var result = await submitReport();
+    if(result == null) {
+      CommonUtils.showSnackBar(
+          settingsPageKey, 'Some thing went wrong ! please try again.', null, true);
+    } else if(result == 'userNotFound') {
+      CommonUtils.showSnackBar(
+          settingsPageKey, 'Invalid User, Please save user details!', null, true);
+    } else if(result == 'nodata') {
+      CommonUtils.showSnackBar(
+          settingsPageKey, 'No data found!', null, true);
+    } else if(result == 'NetworkError'){
+      CommonUtils.showSnackBar(
+          settingsPageKey, null, null, true);
+    }
+    else {
+      CommonUtils.showSnackBar(
+          settingsPageKey, 'Successfully send to server!', null, true);
+      cleanReport();
+    }
+    stopLoading();
+  }
 
   @override
   void initState() {
@@ -34,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: Container(
         child: Center(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(10.0),
@@ -54,29 +95,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ),
-              /*SizedBox(
-              height: 30.0,
-            ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: Colors.black,
-                      width: 2.0,
-                      style: BorderStyle.solid)),
-              child: IconButton(
-                icon: Icon(Icons.cloud_download),
-                iconSize: 40.0,
-                color: Colors.blueAccent,
-                onPressed: () {
-                  print('open form for user name & password');
-                },
-              ),
-            ),*/
               SizedBox(
-                height: 30.0,
+                height: 10.0,
               ),
               Container(
                 padding: EdgeInsets.all(10.0),
@@ -91,20 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   icon: Icon(Icons.send),
                   iconSize: 40.0,
                   color: Colors.blueAccent,
-                  onPressed: () async {
-                    var result = await submitReport();
-                    if(result == null) {
-                      CommonUtils.showSnackBar(
-                          settingsPageKey, 'Some thing went wrong ! please try again.', null);
-                    } else if(result == 'userNotFound') {
-                      CommonUtils.showSnackBar(
-                          settingsPageKey, 'Invalid User, Please save user details!', null);
-                    }
-                    else {
-                      CommonUtils.showSnackBar(
-                          settingsPageKey, 'Successfully send to server!', null);
-                    }
-                  },
+                  onPressed: _isLoading ? null : () { sendReport(); },
                 ),
               ),
             ],

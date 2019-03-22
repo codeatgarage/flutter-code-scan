@@ -33,7 +33,7 @@ deleteReport(id) {
 /* *
  * Flush out the db table when execution is done.
  * */
-cleanCart() {
+cleanReport() {
   var dbUtils = new DbUtils();
   dbUtils.clearReport();
 }
@@ -66,7 +66,6 @@ Future loadUser() async {
 * Store some sample report for validation
 * */
 
-/*
   saveDummy() {
     saveReport(new ScannerModel(
         eanCode: "234U"));
@@ -77,4 +76,3 @@ Future loadUser() async {
     saveReport(new ScannerModel(
         eanCode: "222U"));
   }
-*/
