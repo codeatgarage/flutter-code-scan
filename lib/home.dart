@@ -1,12 +1,14 @@
-import 'package:code_scann/common.utils.dart';
+import 'package:async_loader/async_loader.dart';
+import 'package:code_scann/utils/common.utils.dart';
 import 'package:code_scann/fab_bottom_app_bar.dart';
 import 'package:code_scann/listing_page.dart';
 import 'package:code_scann/models/scanner_model.dart';
-import 'package:code_scann/scanner_utils.dart';
+import 'package:code_scann/utils/scanner_utils.dart';
 import 'package:code_scann/setting_page.dart';
 import 'package:code_scann/utils/report_service.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
+import 'main.dart' as main;
 
 var bgColor = Colors.blue[800];
 
@@ -16,8 +18,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   GlobalKey<ScaffoldState> homepageKey = new GlobalKey<ScaffoldState>();
+
+  final GlobalKey<AsyncLoaderState> listingPageKey =
+      new GlobalKey<AsyncLoaderState>();
+
   var _selectedIndex = 0;
 
   void _selectedTab(int index) {
@@ -29,32 +34,37 @@ class _HomePageState extends State<HomePage> {
   /* *
    * List for holding all the pages to navigate via bottom navigation bar
    * */
-  List allPages =[];
+  List allPages = [];
   loadAvailablePages() {
-    allPages.add(CodeListing());
+    allPages.add(CodeListing(
+      listingPageKey: listingPageKey,
+    ));
     allPages.add(SettingsPage());
   }
 
   saveCode(code) {
 //    String scanDate = DateTime.now().toIso8601String();
-    String scanDate = formatDate(DateTime.now(), [dd,'/',mm,'/',yy,'-',HH,':',nn]);
+    String scanDate =
+        formatDate(DateTime.now(), [dd, '/', mm, '/', yy, '-', HH, ':', nn]);
     ScannerModel result = new ScannerModel(eanCode: code, cDate: scanDate);
     saveReport(result);
     CommonUtils.showSnackBar(homepageKey, 'Code Save!.', null);
+    listingPageKey.currentState.reloadState();
   }
 
   /* Scan now is function to start the scanner*/
   scanNow() async {
     String result = await ScannerUtils.getBarCode();
-    if(result.contains('back')) {
+    if (result.contains('back')) {
       CommonUtils.showSnackBar(homepageKey, 'Back button pressed.', null);
     } else if (!result.contains('Err:')) {
       saveCode(result);
     } else {
-      CommonUtils.showSnackBar(homepageKey, 'Some thing went wrong ! please try again.', null);
+      CommonUtils.showSnackBar(
+          homepageKey, 'Some thing went wrong ! please try again.', null);
     }
+    listingPageKey.currentState.reloadState();
   }
-
 
   @override
   void initState() {
@@ -76,16 +86,17 @@ class _HomePageState extends State<HomePage> {
           items: [
             FABBottomAppBarItem(iconData: Icons.home, text: 'home'),
             FABBottomAppBarItem(iconData: Icons.settings, text: 'setting')
-          ]
-      ),
+          ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.center_focus_weak, color: Colors.white,),
+        child: Icon(
+          Icons.center_focus_weak,
+          color: Colors.white,
+        ),
         backgroundColor: bgColor,
         elevation: 2.0,
         onPressed: scanNow,
       ),
     );
   }
-
 }

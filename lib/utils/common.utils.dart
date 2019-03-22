@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class CommonUtils {
-
   /*show snack bar for the error and other options*/
 
   static showSnackBar(
@@ -11,7 +10,7 @@ class CommonUtils {
         backgroundColor: color != null ? color : Colors.red[300],
         duration: Duration(milliseconds: 3000),
         content: new Container(
-          height: 20.0,
+          height: 15.0,
           alignment: Alignment.center,
           child: Text(message ?? "You are offline"),
         ),
