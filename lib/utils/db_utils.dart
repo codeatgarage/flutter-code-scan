@@ -91,7 +91,7 @@ class DbUtils {
   void updateUser(UserModel user) async {
     var dbClient = await db;
     dbClient.rawInsert(
-        "INSERT INTO $user_table_name (userName, password, clientId) VALUES (?, ?, ?) WHERE id = ?",
+        'UPDATE $user_table_name SET userName = ?, password = ?, clientId = ? WHERE id=?',
         [user.userName, user.password, user.clientId, user.id]);
   }
 

@@ -46,7 +46,7 @@ cleanCart() {
 
 saveUser(UserModel user) async {
   var dbUtils = DbUtils();
-  var existingReports = await dbUtils.getReportByEan(user.id);
+  var existingReports = await dbUtils.getUserById(user.id);
   if (existingReports.length == 0) {
     return dbUtils.saveUser(user);
   } else {
@@ -61,7 +61,11 @@ saveUser(UserModel user) async {
 Future loadUser() async {
   var dbUtils = new DbUtils();
   var rawUser = await dbUtils.getUser();
-  return UserModel.fromMapObject(rawUser[0]);
+  if (rawUser.length > 0) {
+    return UserModel.fromMapObject(rawUser[0]);
+  } else {
+    return null;
+  }
 }
 
 /* *

@@ -13,15 +13,9 @@ class _SettingsPageState extends State<SettingsPage> {
   TextEditingController _clientIdController = new TextEditingController();
   UserModel userProfile;
 
-  loadUserDetails() async {
-    userProfile = await loadUser();
-    print('userProfile');
-  }
-
   @override
   void initState() {
     super.initState();
-    loadUserDetails();
   }
 
   @override
@@ -45,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 iconSize: 40.0,
                 color: Colors.blueAccent,
                 onPressed: () {
-                  showFormDialog(userProfile);
+                  showFormDialog();
                 },
               ),
             ),
@@ -97,10 +91,14 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<void> showFormDialog(UserModel initialValue) async {
-    _userNameController.text = initialValue.userName;
-    _passwordController.text = initialValue.password;
-    _clientIdController.text = initialValue.clientId;
+  Future<void> showFormDialog() async {
+    UserModel initialValue = await loadUser();
+    _userNameController.text =
+        (initialValue != null) ? initialValue.userName : '';
+    _passwordController.text =
+        (initialValue != null) ? initialValue.password : '';
+    _clientIdController.text =
+        (initialValue != null) ? initialValue.clientId : '';
 
     return await showDialog(
         context: context,
@@ -128,6 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     TextField(
                       autofocus: true,
                       controller: _passwordController,
+                      obscureText: true,
                       decoration: new InputDecoration(
                           labelText: 'Password', hintText: '******'),
                     ),
@@ -159,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           userName: userName,
                           clientId: clientId,
                           password: password,
-                          id: userProfile.id);
+                          id: (initialValue != null) ? initialValue.id : null);
                       print(userValue);
                       print(userName);
                       print(clientId);
