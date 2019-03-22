@@ -40,7 +40,7 @@ class DbUtils {
   // Create table to store reports
   void createTable(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE IF NOT EXISTS $report_table_name ( id INTEGER PRIMARY KEY AUTOINCREMENT, eanCode TEXT, cDate INTEGER )");
+        "CREATE TABLE IF NOT EXISTS $report_table_name ( id INTEGER PRIMARY KEY AUTOINCREMENT, eanCode TEXT, cDate TEXT )");
     await db.execute(
         "CREATE TABLE IF NOT EXISTS $user_table_name ( id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, password TEXT, clientId TEXT )");
   }
@@ -56,8 +56,8 @@ class DbUtils {
   void saveReport(report) async {
     var dbClient = await db;
     dbClient.rawInsert(
-        "INSERT INTO $report_table_name (eanCode, cDate) VALUES (?, strftime(?,'now'))",
-        [report.eanCode, report.cDate]);
+        "INSERT INTO $report_table_name (eanCode, cDate) VALUES (?, datetime('now'))",
+        [report.eanCode]);
   }
 
   // Clear report db

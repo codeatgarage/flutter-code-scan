@@ -43,10 +43,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   saveCode(code) {
-//    String scanDate = DateTime.now().toIso8601String();
-    String scanDate =
-        formatDate(DateTime.now(), [dd, '/', mm, '/', yy, '-', HH, ':', nn]);
-    ScannerModel result = new ScannerModel(eanCode: code, cDate: scanDate);
+    ScannerModel result = new ScannerModel(eanCode: code);
     saveReport(result);
     CommonUtils.showSnackBar(homepageKey, 'Code Save!.', null);
     listingPageKey.currentState.reloadState();

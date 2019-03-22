@@ -7,6 +7,7 @@ class ScannerUtils {
     String eanCode;
     try {
       String qrResult = await BarcodeScanner.scan();
+      print(qrResult);
       eanCode = qrResult;
     } on PlatformException catch (ex) {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {

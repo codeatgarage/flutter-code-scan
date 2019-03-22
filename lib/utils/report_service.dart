@@ -20,12 +20,6 @@ Future loadReports() async {
 saveReport(ScannerModel scanData) async {
   var dbUtils = DbUtils();
   return dbUtils.saveReport(scanData);
-  /*var existingReports = await dbUtils.getReportByEan(scanData.eanCode);
-  if (existingReports.length == 0) {
-    return dbUtils.saveReport(scanData);
-  } else {
-    return null;
-  }*/
 }
 
 /* *

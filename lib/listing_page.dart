@@ -19,7 +19,6 @@ class _CodeListingState extends State<CodeListing> {
         itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
           ScannerModel scanItem = data[index];
-          print(index);
           return ListTile(
             leading: Icon(Icons.center_focus_strong, color: Colors.green[200]),
             title: Text(
