@@ -28,7 +28,8 @@ Key Features :
 
 ## Plugins used:
   - barcode_scan: 0.0.8
-  - http: ^0.11.3+16
+  - csv: 4.0.2
+  - dio: 2.1.0
   - sqflite: 0.13.0+1
 
 

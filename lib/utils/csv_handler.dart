@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:code_scann/models/user_model.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:code_scann/utils/report_service.dart';
 import 'package:csv/csv.dart';
 import 'package:code_scann/models/scanner_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
 // load local path
@@ -41,37 +38,6 @@ Future<File> processListToCsv() async {
   }
   String reportCsv = const ListToCsvConverter().convert(codeListHolder);
   return await writeCsvToFile(reportCsv);
-}
-
-submitReport1() async {
-  try {
-    UserModel user = await loadUser();
-    if(user == null ){
-      return 'userNotFound';
-    }
-    var reportSaveUrl = Uri.parse("https://homecaresoft.cz/indata/inres.php");
-    var request = new http.MultipartRequest("POST", reportSaveUrl);
-    var csvFile = await processListToCsv();
-    var len = await csvFile.length();
-    if(len == 0) {
-      return 'nodata';
-    }
-
-    request.fields['clientid'] = user.clientId;
-    request.fields['username'] = user.userName;
-    request.fields['password'] = user.password;
-    var currentDate = DateTime.now();
-
-    request.files.add(new http.MultipartFile.fromBytes('reports_${currentDate.millisecondsSinceEpoch}.txt', await csvFile.readAsBytes(),
-        contentType: new MediaType('application', 'octet-stream')));
-    http.StreamedResponse response = await request.send();
-      csvFile.delete();
-      print(response.reasonPhrase);
-      print(response.statusCode);
-      return response;
-  } catch (e) {
-      return false;
-  }
 }
 
 submitReport() async {
